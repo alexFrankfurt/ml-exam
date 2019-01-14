@@ -4,10 +4,10 @@ from anytree import Node
 
 
 class DecisionTreeClassifier():
-    def __init__(self, max_height = 5):
+    def __init__(self, max_depth = 5):
         self.root = None
         self.classes_ = []
-        self.max_height = max_height
+        self.max_depth = max_depth
 
     # 0 <= X <= 1
     # y - classes
@@ -47,18 +47,18 @@ class DecisionTreeClassifier():
 
         return p_total
 
-    def build_tree(self, X, y, cur_height, parent = None):
+    def build_tree(self, X, y, cur_depth, parent = None):
         (left_idx, rigth_idx, cur_node) = self.build_node(X, y, parent or self.root)
         if self.root == None:
             self.root = cur_node
         (X_left, y_left, X_right, y_right) = (X[left_idx], y[left_idx], X[rigth_idx], y[rigth_idx])
-        if y_left.shape[0] > 1 and self.entropy(y_left) > 0.3 and cur_height < self.max_height:
-            self.build_tree(X_left, y_left, cur_height+1, cur_node)
+        if y_left.shape[0] > 1 and self.entropy(y_left) > 0.3 and cur_depth < self.max_depth:
+            self.build_tree(X_left, y_left, cur_depth+1, cur_node)
         else:
             Node(y[left_idx], cur_node)
 
-        if y_right.shape[0] > 1 and self.entropy(y_right) > 0.3 and cur_height < self.max_height:
-            self.build_tree(X_right, y_right, cur_height+1, cur_node)
+        if y_right.shape[0] > 1 and self.entropy(y_right) > 0.3 and cur_depth < self.max_depth:
+            self.build_tree(X_right, y_right, cur_depth+1, cur_node)
         else:
             Node(y[rigth_idx], cur_node)
 
