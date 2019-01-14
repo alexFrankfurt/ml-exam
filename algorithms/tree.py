@@ -1,4 +1,10 @@
 import numpy as np
+from random import choice, randint, uniform
+from dataclasses import dataclass
+
+@dataclass
+class C:
+    i: int = 1
 
 class DecisionTreeClassifier():
     def __init__(self, max_height = 5):
@@ -66,9 +72,20 @@ class DecisionTreeClassifier():
         return ()
 
     # function([[x1,x2,x3,y],[x1,x2,x3,y]]) => lambda
-    def _split(self, X, y):
-        x_split = x3 < rand(0,1)
-        # lambda => [y1, y2, string = x1 < 0.7]
-        return function(x_index = 1, n_rand = 0.7) {
+    def split(self, X, Y):
+        length = len(X)
+        rand_idx = randint(0, length - 1)
+        signs = [">", "<", "<=", ">="]
+        chosen_sign = choice(signs)
+        limit = uniform(0, 1)
 
-        }
+        print("x" + str(rand_idx) + chosen_sign + str(limit))
+        b = [(idx, features) for idx, features in enumerate(X) if features[rand_idx] > limit]
+        print(b)
+
+        # x_split = x3 < rand(0,1)
+        # lambda => [y1, y2, string = x1 < 0.7]
+        # return function(x_index = 1, n_rand = 0.7) {
+
+        # }
+        return lambda x, y: C.i
