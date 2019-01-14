@@ -1,13 +1,10 @@
 import numpy as np
 from random import choice, randint, uniform
-from dataclasses import dataclass
 
-@dataclass
-class C:
-    i: int = 1
 
 class DecisionTreeClassifier():
     def __init__(self, max_height = 5):
+        self.operation_list = []
         self.classes_ = []
         self.max_height = max_height
 
@@ -53,36 +50,47 @@ class DecisionTreeClassifier():
             self.build_tree(X_right, y_right, cur_height+1)
 
     def build_node(self, X, y):
+        y = np.array(y)
         init_entropy = self.entropy(y)
         inf_gain_list = []
-        x_split_func_list = []
+        x_split_list = []
         for i in range(0,100):
-            x_split_func = selt._split(X, y)
-            x_split_func_list.push(x_split_func)
-            (y1, y2, _) = x_split_func()
-            entropy_left = self.entropy(y1)
-            entropy_right = self.entropy(y2)
+            (left_idx, right_idx, operation) = self.split(X, y)
+            x_split_list.append((left_idx, right_idx, operation))
+            self.operation_list.append(operation)
+            (y_left, y_right) = (y[left_idx], y[right_idx])
+
+            entropy_left = self.entropy(y_left)
+            entropy_right = self.entropy(y_right)
             inf_gain = init_entropy - (entropy_left + entropy_right)
-            inf_gain_list.push(inf_gain)
+            inf_gain_list.append(inf_gain)
 
         best_split_arg = np.argmax(inf_gain_list)
-        best_x_split = x_split_func_list[best_split_arg]
-        (_, _, node) = best_x_split()
+        best_x_split = x_split_list[best_split_arg]
+        print('best_x_split: ', best_x_split)
 
-        return ()
+        return 0
 
     # function([[x1,x2,x3,y],[x1,x2,x3,y]]) => lambda
     def split(self, X, Y):
-        length = len(X)
-        rand_idx = randint(0, length - 1)
+        n_features = len(X[0])
+        rand_idx = randint(0, n_features - 1)
         limit = uniform(0, 1)
+        signs = [">", "<", "<=", ">="]
+        sign_func = [
+            lambda x, y: x > y,
+            lambda x, y: x < y,
+            lambda x, y: x <= y,
+            lambda x, y: x >= y
+        ]
+        sign_idx = randint(0, len(signs) - 1)
 
-        operation = "x" + str(rand_idx) + '<' + str(limit)
-        left = [(idx, features) for idx, features in enumerate(X) if features[rand_idx] < limit]
-        left_idx = list(map(lambda x: x[0], left))
-        right_idx = [idx for idx in range(0, length) if idx not in left_idx]
-        print('operation: ', operation)
-        print('left idx: ', left_idx)
-        print('right idx: ', right_idx)
+        operation = "x" + str(rand_idx) + signs[sign_idx] + str(limit)
+        # print('X:', X)
+        # print('operation: ', operation)
+        left_idx = [idx for idx, features in enumerate(X) if sign_func[sign_idx](features[rand_idx], limit)]
+        right_idx = [idx for idx in range(0, len(Y)) if idx not in left_idx]
+        # print('left idx: ', left_idx)
+        # print('right idx: ', right_idx)
 
         return (left_idx, right_idx, operation)
