@@ -24,4 +24,4 @@ pip show pip
 
 ### Dependencies
 
-To isntall dependencies run either `make init` or `pip install -r requirements.txt`
+To isntall dependencies run either `make init` or `pip install -r requirements.txt` or using pipenv `pipenv install --dev`
