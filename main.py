@@ -1,5 +1,6 @@
-import requests
+from algorithms import tree
 
-response = requests.get('https://httpbin.org/ip')
+tree_classifier = tree.DecisionTreeClassifier()
 
-print('Your IP is {0}'.format(response.json()['origin']))
+print(tree_classifier.binary_entropy([1,1,1,1,1,1,1,1,1,0,0,0,0,0]))
+print(tree_classifier.entropy([1,1,1,0,0,0,2,2,2]))
