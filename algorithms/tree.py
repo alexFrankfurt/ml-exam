@@ -18,7 +18,7 @@ class DecisionTreeClassifier():
 
         self.build_tree(X, y, 0)
 
-        print('tree:', self.root)
+        # print('tree:', self.root)
 
     def predict(self, X):
         print('predict')
@@ -50,20 +50,24 @@ class DecisionTreeClassifier():
     def build_tree(self, X, y, cur_height, parent = None):
         (left_idx, rigth_idx, cur_node) = self.build_node(X, y, parent or self.root)
         if self.root == None:
-            self.root = cur_node 
+            self.root = cur_node
         (X_left, y_left, X_right, y_right) = (X[left_idx], y[left_idx], X[rigth_idx], y[rigth_idx])
         if y_left.shape[0] > 1 and self.entropy(y_left) > 0.3 and cur_height < self.max_height:
             self.build_tree(X_left, y_left, cur_height+1, cur_node)
+        else:
+            Node(y[left_idx], cur_node)
 
         if y_right.shape[0] > 1 and self.entropy(y_right) > 0.3 and cur_height < self.max_height:
             self.build_tree(X_right, y_right, cur_height+1, cur_node)
+        else:
+            Node(y[rigth_idx], cur_node)
 
     def build_node(self, X, y, parent):
         y = np.array(y)
         init_entropy = self.entropy(y)
         inf_gain_list = []
         x_split_list = []
-        for i in range(0,100):
+        for i in range(0,1000):
             (left_idx, right_idx, operation) = self.split(X, y)
             x_split_list.append((left_idx, right_idx, operation))
             (y_left, y_right) = (y[left_idx], y[right_idx])
