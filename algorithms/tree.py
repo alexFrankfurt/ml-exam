@@ -75,17 +75,14 @@ class DecisionTreeClassifier():
     def split(self, X, Y):
         length = len(X)
         rand_idx = randint(0, length - 1)
-        signs = [">", "<", "<=", ">="]
-        chosen_sign = choice(signs)
         limit = uniform(0, 1)
 
-        print("x" + str(rand_idx) + chosen_sign + str(limit))
-        b = [(idx, features) for idx, features in enumerate(X) if features[rand_idx] > limit]
-        print(b)
+        operation = "x" + str(rand_idx) + '<' + str(limit)
+        left = [(idx, features) for idx, features in enumerate(X) if features[rand_idx] < limit]
+        left_idx = list(map(lambda x: x[0], left))
+        right_idx = [idx for idx in range(0, length) if idx not in left_idx]
+        print('operation: ', operation)
+        print('left idx: ', left_idx)
+        print('right idx: ', right_idx)
 
-        # x_split = x3 < rand(0,1)
-        # lambda => [y1, y2, string = x1 < 0.7]
-        # return function(x_index = 1, n_rand = 0.7) {
-
-        # }
-        return lambda x, y: C.i
+        return (left_idx, right_idx, operation)
