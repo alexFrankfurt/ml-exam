@@ -1,25 +1,16 @@
 import numpy as np
 
-class Data():
-    def __init__(self, X, y):
-        self.X = np.array(X)
-        self.y = np.array(y)
-
 class DecisionTreeClassifier():
-    def __init__(self):
+    def __init__(self, max_height = 5):
         self.classes_ = []
-        print('__init__')
+        self.max_height = max_height
 
     # 0 <= X <= 1
     # y - classes
     def fit(self, X = [[]], y = []):
         self.classes_ = np.unique(y)
 
-        # data_left = Data(X, y)
-        # (data_left, data_right) = self.createNode(data_left['X'], data_left['y'])
-        # if data_left.shape[0] > 3:
-        #     self.createNode(X, y)
-
+        self.build_tree(X, y, 0)
 
         print('fit')
 
@@ -47,7 +38,15 @@ class DecisionTreeClassifier():
 
         return p_total
 
-    def createNode(self, X, y):
+    def build_tree(self, X, y, cur_height):
+        (X_left, y_left, X_right, y_right) = self.build_node(X, y)
+        if y_left.shape > 3 and self.entropy(y_left) > 0.3 and cur_height < self.max_height:
+            self.build_tree(X_left, y_left, cur_height+1)
+
+        if y_right.shape > 3 and self.entropy(y_right) > 0.3 and cur_height < self.max_height:
+            self.build_tree(X_right, y_right, cur_height+1)
+
+    def build_node(self, X, y):
         init_entropy = self.entropy(y)
         inf_gain_list = []
         x_split_func_list = []
