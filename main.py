@@ -1,4 +1,5 @@
 from algorithms import tree
+from anytree import Node, RenderTree
 
 tree_classifier = tree.DecisionTreeClassifier()
 
@@ -23,10 +24,17 @@ y = [
 print('X: ', X)
 # print(tree_classifier.split([[1,0],[0,2],[0.1,0.4]], [4, 3,1]))
 
-print(tree_classifier.build_node(X, y))
+# print(tree_classifier.build_node(X, y))
+#
+# print('y',tree_classifier.entropy(y))
+# print('0, 1, 1, 0',tree_classifier.entropy([0, 1, 1, 0]))
+# print('2, 2, 2',tree_classifier.entropy([2, 2, 2]))
+# print('0,0',tree_classifier.entropy([0,0]))
+# print('1,1,2,2,2',tree_classifier.entropy([1,1,2,2,2]))
 
-print('y',tree_classifier.entropy(y))
-print('0, 1, 1, 0',tree_classifier.entropy([0, 1, 1, 0]))
-print('2, 2, 2',tree_classifier.entropy([2, 2, 2]))
-print('0,0',tree_classifier.entropy([0,0]))
-print('1,1,2,2,2',tree_classifier.entropy([1,1,2,2,2]))
+tree_model = tree_classifier.fit(X, y)
+tree_root = tree_classifier.get_root()
+# RenderTree(tree_root)
+
+for pre, fill, node in RenderTree(tree_root):
+    print("%s%s" % (pre, node.name))
