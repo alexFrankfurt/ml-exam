@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import tree
 
 class RandomForestRegressor():
     # independent variables of training set
@@ -7,7 +8,7 @@ class RandomForestRegressor():
 
     # dependent variables
     #y =
-    # n_tees - number of uncorrelated trees we ensemble to create the random forest
+    # n_trees - number of uncorrelated trees we ensemble to create the random forest
     # n_features - the number of features to sample and pass onto each tree
     # sample_size - the number of rows randomly selected and passed onto each tree
     # depth - depth of each decision tree
