@@ -41,20 +41,21 @@ class RandomForestRegressor():
 
         most_frequent = []
         for i in range(0,len(y)):
-            most_frequent.append(self.choose_most_frequent(x, tree_list, i))
+            most_frequent.append(self.choose_most_frequent(x, self.tree_list, i))
         self.best_guess = most_frequent
 
-    def predict(X):
+    def predict(self, X):
         predicts = []
         for tree in self.tree_list:
             predicts.append(tree.predict(X))
 
+        predicts = np.matrix.transpose(np.array(predicts))
+        # print('predicsts:', predicts)
         most_frequent = []
-        for i in range(0,len(predicts)):
-            most_frequent.append(self.choose_most_frequent(X, self.tree_list, i))
+        for predict in predicts:
+            print('predict:', predict)
+            most_frequent.append(self.most_common(predict))
         return most_frequent
-
-
 
 
     def choose_most_frequent(self, X, trees, i):
