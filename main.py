@@ -2,6 +2,7 @@ from algorithms import tree
 import pandas as pd
 import numpy as np
 
+from algorithms.forest import RandomForestRegressor
 from sklearn.datasets import load_iris
 from sklearn import preprocessing
 
@@ -29,3 +30,6 @@ tree_classifier.render()
 
 res = tree_model.predict(x_iris)
 print('res:', res)
+
+
+RandomForestRegressor(X, y, 20, 3, 12)
