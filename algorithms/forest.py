@@ -18,7 +18,7 @@ class RandomForestRegressor():
     # min_leaf - minimum number of rows required in a node to cause further split
 
     def __init__(self, x, y, n_trees, n_features, sample_sz, depth=5, min_leaf=2):
-        tree_list = []
+        self.tree_list = []
         for i in range(0, n_trees):
             random_features = []
             random_rows     = []
@@ -37,12 +37,23 @@ class RandomForestRegressor():
 
             tree = DecisionTreeClassifier(depth, min_leaf)
             tree.fit(random_rows, random_y)
-            tree_list.append(tree)
+            self.tree_list.append(tree)
 
         most_frequent = []
         for i in range(0,len(y)):
             most_frequent.append(self.choose_most_frequent(x, tree_list, i))
         self.best_guess = most_frequent
+
+    def predict(X):
+        predicts = []
+        for tree in self.tree_list:
+            predicts.append(tree.predict(X))
+
+        most_frequent = []
+        for i in range(0,len(predicts)):
+            most_frequent.append(self.choose_most_frequent(X, self.tree_list, i))
+        return most_frequent
+
 
 
 
