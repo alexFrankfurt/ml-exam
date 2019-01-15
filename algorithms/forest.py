@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import itertools
+import operator
 from tree import DecisionTreeClassifier
 from random import sample
 
@@ -36,3 +38,34 @@ class RandomForestRegressor():
             tree = DecisionTreeClassifier(depth, min_leaf)
             tree.fit(random_rows, random_y)
             tree_list.append(tree)
+        most_frequent = []
+        for i in range(0,len(y)):
+            most_frequent.append(choose_most_frequent(X, trees, i))
+        self.best_guess = most_frequent
+
+
+
+    def choose_most_frequent(X, trees, i):
+        gueses = []
+        for tree in range(0, len(trees)):
+            gueses.append(tree.predict(X)[i])
+        return most_frequent(gueses)
+
+
+    def most_common(L):
+        # get an iterable of (item, iterable) pairs
+        SL = sorted((x, i) for i, x in enumerate(L))
+        # print 'SL:', SL
+        groups = itertools.groupby(SL, key=operator.itemgetter(0))
+        # auxiliary function to get "quality" for an item
+        def _auxfun(g):
+            item, iterable = g
+            count = 0
+            min_index = len(L)
+            for _, where in iterable:
+            count += 1
+            min_index = min(min_index, where)
+            # print 'item %r, count %r, minind %r' % (item, count, min_index)
+            return count, -min_index
+        # pick the highest-count/earliest item
+        return max(groups, key=_auxfun)[0]
