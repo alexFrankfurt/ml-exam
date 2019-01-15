@@ -32,4 +32,4 @@ res = tree_model.predict(x_iris)
 print('res:', res)
 
 
-RandomForestRegressor(X, y, 20, 3, 12)
+RandomForestRegressor(x_iris, y_iris, 20, 3, 12)
