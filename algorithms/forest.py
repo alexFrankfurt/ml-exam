@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import itertools
 import operator
-from tree import DecisionTreeClassifier
+from algorithms.tree import DecisionTreeClassifier
 from random import sample
 
 class RandomForestRegressor():
@@ -17,9 +17,9 @@ class RandomForestRegressor():
     # depth - depth of each decision tree
     # min_leaf - minimum number of rows required in a node to cause further split
 
-     def __init__(self, x, y, n_trees, n_features, sample_sz, depth=10, min_leaf=2):
-         tree_list = []
-         for i in range(0, n_trees):
+    def __init__(self, x, y, n_trees, n_features, sample_sz, depth=5, min_leaf=2):
+        tree_list = []
+        for i in range(0, n_trees):
             random_features = []
             random_rows     = []
             random_y        = []
@@ -38,6 +38,7 @@ class RandomForestRegressor():
             tree = DecisionTreeClassifier(depth, min_leaf)
             tree.fit(random_rows, random_y)
             tree_list.append(tree)
+
         most_frequent = []
         for i in range(0,len(y)):
             most_frequent.append(choose_most_frequent(X, trees, i))
@@ -63,8 +64,8 @@ class RandomForestRegressor():
             count = 0
             min_index = len(L)
             for _, where in iterable:
-            count += 1
-            min_index = min(min_index, where)
+                count += 1
+                min_index = min(min_index, where)
             # print 'item %r, count %r, minind %r' % (item, count, min_index)
             return count, -min_index
         # pick the highest-count/earliest item
