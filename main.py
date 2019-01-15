@@ -1,4 +1,4 @@
-from algorithms import tree
+from algorithms import tree, forest
 import pandas as pd
 import numpy as np
 
@@ -38,3 +38,8 @@ res = y_test == y_
 # print('res:', res)
 acc = np.sum(res) / len(y_)
 print('accuracy:', acc)
+
+
+forest_classifier = forest.RandomForestRegressor(x_iris, y_iris, n_trees=10, n_features=3, sample_sz=10)
+forest_res = forest_classifier.best_guess
+print(forest_res)

@@ -48,7 +48,7 @@ class RandomForestRegressor():
 
     def choose_most_frequent(self, X, trees, i):
         gueses = []
-        for tree in range(0, len(trees)):
+        for tree in trees:
             gueses.append(tree.predict(X)[i])
         return self.most_common(gueses)
 
