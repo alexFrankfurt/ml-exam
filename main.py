@@ -1,5 +1,4 @@
 from algorithms import tree
-from anytree import Node, RenderTree
 import pandas as pd
 import numpy as np
 
@@ -55,8 +54,7 @@ y = [
 # print('1,1,2,2,2',tree_classifier.entropy([1,1,2,2,2]))
 
 tree_model = tree_classifier.fit(x_iris, y_iris)
-tree_root = tree_classifier.get_root()
-# RenderTree(tree_root)
+tree_classifier.render()
 
-for pre, fill, node in RenderTree(tree_root):
-    print("%s%s" % (pre, node.name))
+res = tree_model.predict(x_iris)
+print('res:', res)
