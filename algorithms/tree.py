@@ -4,7 +4,7 @@ from anytree import Node
 
 
 class DecisionTreeClassifier():
-    def __init__(self, max_depth = 5, min_leaf = 5):
+    def __init__(self, max_depth = 5, min_leaf = 2):
         self.root = None
         self.classes_ = []
         self.max_depth = max_depth
