@@ -1,5 +1,5 @@
 import numpy as np
-from random import choice, randint, uniform
+import random
 from binarytree import Node
 
 
@@ -28,7 +28,7 @@ class DecisionTreeClassifier():
         return res
 
     def find(self, x, node):
-        if isinstance(node, BinaryTreeLeaf):
+        if node.is_leaf:
             return node.predict()
         if node.operation(x):
             return self.find(x, node.right)
@@ -59,25 +59,37 @@ class DecisionTreeClassifier():
 
         return p_total
 
-    def build_tree(self, X, y, cur_depth, parent = None):
+    def build_tree(self, X, y, cur_depth, node = None):
         (left_idx, rigth_idx, operation_str, operation) = self.build_node(X, y)
-        if parent == None:
+        if node == None:
             self.root = BinaryTreeNode()
-            parent = self.root
-        parent.set(operation, operation_str)
+            node = self.root
+        node.set(operation, operation_str)
+        print('res', (left_idx, rigth_idx, operation_str))
+
+        if len(left_idx) == 0 or len(rigth_idx) == 0:
+            print('emergency leaf')
+            node.is_leaf = True
+            node.set(data = y)
+            return
 
         (X_left, y_left, X_right, y_right) = (X[left_idx], y[left_idx], X[rigth_idx], y[rigth_idx])
+        print('self-entropy', self.entropy(y_left))
         if y_left.shape[0] > 1 and self.entropy(y_left) > 0.3 and cur_depth < self.max_depth:
-            parent.set_left(BinaryTreeNode())
-            self.build_tree(X_left, y_left, cur_depth+1, parent.left)
+            node.set_left(BinaryTreeNode())
+            self.build_tree(X_left, y_left, cur_depth+1, node.left)
         else:
-            parent.set_left(BinaryTreeLeaf(y_left))
+            left_node = BinaryTreeNode(data = y_left)
+            node.set_left(left_node)
+            left_node.is_leaf = True
 
         if y_right.shape[0] > 1 and self.entropy(y_right) > 0.3 and cur_depth < self.max_depth:
-            parent.set_right(BinaryTreeNode())
-            self.build_tree(X_right, y_right, cur_depth+1, parent.right)
+            node.set_right(BinaryTreeNode())
+            self.build_tree(X_right, y_right, cur_depth+1, node.right)
         else:
-            parent.set_right(BinaryTreeLeaf(y_right))
+            right_node = BinaryTreeNode(data = y_right)
+            node.set_right(right_node)
+            right_node.is_leaf = True
 
     def build_node(self, X, y):
         y = np.array(y)
@@ -86,7 +98,7 @@ class DecisionTreeClassifier():
         x_split_list = []
         for i in range(0,1000):
             (left_idx, right_idx, operation_str, operation_func) = self.split(X, y)
-            x_split_list.append((left_idx, right_idx, operation_str))
+            x_split_list.append((left_idx, right_idx, operation_str, operation_func))
             (y_left, y_right) = (y[left_idx], y[right_idx])
 
             entropy_left = self.entropy(y_left)
@@ -96,14 +108,15 @@ class DecisionTreeClassifier():
 
         best_split_arg = np.argmax(inf_gain_list)
         best_x_split = x_split_list[best_split_arg]
+        print('best inf_gain:', inf_gain_list[best_split_arg])
 
-        return (left_idx, right_idx, operation_str, operation_func)
+        return best_x_split
 
     # function([[x1,x2,x3,y],[x1,x2,x3,y]]) => lambda
     def split(self, X, Y):
         n_features = len(X[0])
-        rand_idx = randint(0, n_features - 1)
-        limit = uniform(0, 1)
+        rand_idx = random.randint(0, n_features - 1)
+        limit = random.uniform(0, 1)
         signs = [">", "<", "<=", ">="]
         sign_func = [
             lambda x, y: x > y,
@@ -111,7 +124,7 @@ class DecisionTreeClassifier():
             lambda x, y: x <= y,
             lambda x, y: x >= y
         ]
-        sign_idx = randint(0, len(signs) - 1)
+        sign_idx = random.randint(0, len(signs) - 1)
 
         operation = "x" + str(rand_idx) + signs[sign_idx] + str(round(limit, 3))
         # print('X:', X)
@@ -125,13 +138,15 @@ class DecisionTreeClassifier():
 
 
 class BinaryTreeNode():
-    def __init__(self, operation = None, data = None):
+    def __init__(self, operation = None, data = None, is_leaf = False):
         self.left = None
         self.right = None
         self.operation = operation
         self.node = Node(data)
+        self.node.value = data
+        self.is_leaf = is_leaf
 
-    def set(self, operation, data):
+    def set(self, operation = None, data = None):
         self.operation = operation
         self.node.value = data
 
@@ -143,15 +158,7 @@ class BinaryTreeNode():
         self.left = binaryTreeNode
         self.node.left = binaryTreeNode.node
 
-
-class BinaryTreeLeaf():
-    def __init__(self, data):
-        self.data = np.array(data)
-        self.left = None
-        self.right = None
-        self.node = Node(data)
-
     def predict(self):
-        (values, counts) = np.unique(self.data, return_counts=True)
+        (values, counts) = np.unique(self.node.value, return_counts=True)
         ind = np.argmax(counts)
         return values[ind]

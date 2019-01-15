@@ -20,34 +20,9 @@ x_iris = data_iris[:,0:4]
 y_iris = data_iris[:,4]
 
 print('x', x_iris)
-print('y', y_iris)
+print('y', y_iris.tolist())
 
 tree_classifier = tree.DecisionTreeClassifier()
-
-X = [
-    [1, 0],
-    [0, 0.2],
-    [0.1, 0.4],
-    [0.6, 0.1],
-    [0.1, 0.8],
-    [0.1, 0.9],
-    [0.3, 0.7]
-]
-
-y = [
-    0, 1, 1, 0, 2, 2, 2
-]
-
-# print('X: ', X)
-# print(tree_classifier.split([[1,0],[0,2],[0.1,0.4]], [4, 3,1]))
-
-# print(tree_classifier.build_node(X, y))
-#
-# print('y',tree_classifier.entropy(y))
-# print('0, 1, 1, 0',tree_classifier.entropy([0, 1, 1, 0]))
-# print('2, 2, 2',tree_classifier.entropy([2, 2, 2]))
-# print('0,0',tree_classifier.entropy([0,0]))
-# print('1,1,2,2,2',tree_classifier.entropy([1,1,2,2,2]))
 
 tree_model = tree_classifier.fit(x_iris, y_iris)
 tree_classifier.render()
