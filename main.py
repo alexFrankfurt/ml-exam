@@ -33,13 +33,17 @@ tree_classifier.render()
 
 y_ = tree_model.predict(x_test)
 print('y_:', y_)
-
-res = y_test == y_
-# print('res:', res)
-acc = np.sum(res) / len(y_)
-print('accuracy:', acc)
+print('tree_accuracy:', accuracy(y_, y_test))
 
 
 forest_classifier = forest.RandomForestRegressor(x_iris, y_iris, n_trees=10, n_features=3, sample_sz=10)
-forest_res = forest_classifier.best_guess
-print(forest_res)
+forest_y = forest_classifier.predict(x_test)
+# forest_res = forest_classifier.best_guess
+print('forest_y:', forest_y)
+print('forest_accuracy:', accuracy(forest_y, y_test))
+
+
+
+def accuracy(y_, y):
+    res = y_ == y
+    return np.sum(res) / len(y_)
