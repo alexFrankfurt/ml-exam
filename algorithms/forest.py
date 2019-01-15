@@ -41,19 +41,19 @@ class RandomForestRegressor():
 
         most_frequent = []
         for i in range(0,len(y)):
-            most_frequent.append(choose_most_frequent(X, trees, i))
+            most_frequent.append(self.choose_most_frequent(x, tree_list, i))
         self.best_guess = most_frequent
 
 
 
-    def choose_most_frequent(X, trees, i):
+    def choose_most_frequent(self, X, trees, i):
         gueses = []
         for tree in range(0, len(trees)):
             gueses.append(tree.predict(X)[i])
-        return most_frequent(gueses)
+        return self.most_common(gueses)
 
 
-    def most_common(L):
+    def most_common(self, L):
         # get an iterable of (item, iterable) pairs
         SL = sorted((x, i) for i, x in enumerate(L))
         # print 'SL:', SL
