@@ -69,7 +69,6 @@ class DecisionTreeClassifier():
 
         if len(left_idx) == 0 or len(rigth_idx) == 0:
             print('emergency leaf')
-            node.is_leaf = True
             node.set(data = y)
             return
 
@@ -138,17 +137,47 @@ class DecisionTreeClassifier():
 
 
 class BinaryTreeNode():
-    def __init__(self, operation = None, data = None, is_leaf = False):
+    def __init__(self, operation=None, data=None):
         self.left = None
         self.right = None
         self.operation = operation
-        self.node = Node(data)
-        self.node.value = data
-        self.is_leaf = is_leaf
+        self._data = data
+        self.is_leaf = False # Will be set to True if data is present and no operation
 
-    def set(self, operation = None, data = None):
-        self.operation = operation
-        self.node.value = data
+        if operation is not None:
+            self.node = Node(operation)
+        elif data is not None:
+            self.node = Node("Leaf") # Placeholder for leaf node
+            self.is_leaf = True
+        else:
+            self.node = Node("Empty") # Placeholder for a node created without initial data/operation
+
+
+    def set(self, operation=None, operation_str=None, data=None):
+        """
+        Sets the properties of the node.
+        - If operation and operation_str are provided, it's an internal node.
+        - If data is provided, it's a leaf node.
+        """
+        if operation is not None and operation_str is not None:
+            self.operation = operation
+            self._data = None
+            self.is_leaf = False
+            self.node.value = operation_str # Use operation_str for display
+        elif data is not None and data.shape[0] > 0: # Check if data is not empty
+            self.operation = None
+            self._data = data
+            self.is_leaf = True
+            # For leaf nodes, we can display the predicted class or a generic label
+            (values, counts) = np.unique(data, return_counts=True)
+            predicted_class = values[np.argmax(counts)]
+            self.node.value = f"Leaf ({predicted_class})"
+        else:
+            # Default case, perhaps for nodes that are not yet fully defined or empty leaf
+            self.operation = None
+            self._data = None
+            self.is_leaf = False
+            self.node.value = "Node" # Generic label for internal or undefined nodes
 
     def set_right(self, binaryTreeNode):
         self.right = binaryTreeNode
@@ -159,6 +188,11 @@ class BinaryTreeNode():
         self.node.left = binaryTreeNode.node
 
     def predict(self):
-        (values, counts) = np.unique(self.node.value, return_counts=True)
+        if self._data is None or self._data.shape[0] == 0:
+            # Handle cases where a leaf node might not have data (e.g., empty split)
+            # This might indicate an issue in build_tree logic, but for now, handle gracefully.
+            return None # Or raise an error, depending on desired behavior.
+
+        (values, counts) = np.unique(self._data, return_counts=True)
         ind = np.argmax(counts)
         return values[ind]
